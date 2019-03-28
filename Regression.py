@@ -1,5 +1,6 @@
 /*second commit*/
 
+/*Modified the scripy*/
 from __future__ import print_function, division
 import numpy as np
 import math
@@ -9,7 +10,7 @@ class l1_regularization():
     """ Regularization for Lasso Regression """
     def __init__(self, alpha):
         self.alpha = alpha
-    
+
     def __call__(self, w):
         return self.alpha * np.linalg.norm(w)
 
@@ -20,7 +21,7 @@ class l2_regularization():
     """ Regularization for Ridge Regression """
     def __init__(self, alpha):
         self.alpha = alpha
-    
+
     def __call__(self, w):
         return self.alpha * 0.5 *  w.T.dot(w)
 
@@ -35,17 +36,17 @@ class l1_l2_regularization():
 
     def __call__(self, w):
         l1_contr = self.l1_ratio * np.linalg.norm(w)
-        l2_contr = (1 - self.l1_ratio) * 0.5 * w.T.dot(w) 
+        l2_contr = (1 - self.l1_ratio) * 0.5 * w.T.dot(w)
         return self.alpha * (l1_contr + l2_contr)
 
     def grad(self, w):
         l1_contr = self.l1_ratio * np.sign(w)
         l2_contr = (1 - self.l1_ratio) * w
-        return self.alpha * (l1_contr + l2_contr) 
+        return self.alpha * (l1_contr + l2_contr)
 
 class Regression(object):
-    """ Base regression model. Models the relationship between a scalar dependent variable y and the independent 
-    variables X. 
+    """ Base regression model. Models the relationship between a scalar dependent variable y and the independent
+    variables X.
     Parameters:
     -----------
     n_iterations: float
@@ -94,7 +95,7 @@ class LinearRegression(Regression):
     learning_rate: float
         The step length that will be used when updating the weights.
     gradient_descent: boolean
-        True or false depending if gradient descent should be used when training. If 
+        True or false depending if gradient descent should be used when training. If
         false then we use batch optimization by least squares.
     """
     def __init__(self, n_iterations=100, learning_rate=0.001, gradient_descent=True):
@@ -118,9 +119,9 @@ class LinearRegression(Regression):
             super(LinearRegression, self).fit(X, y)
 
 class LassoRegression(Regression):
-    """Linear regression model with a regularization factor which does both variable selection 
-    and regularization. Model that tries to balance the fit of the model with respect to the training 
-    data and the complexity of the model. A large regularization factor with decreases the variance of 
+    """Linear regression model with a regularization factor which does both variable selection
+    and regularization. Model that tries to balance the fit of the model with respect to the training
+    data and the complexity of the model. A large regularization factor with decreases the variance of
     the model and do para.
     Parameters:
     -----------
@@ -128,7 +129,7 @@ class LassoRegression(Regression):
         The degree of the polynomial that the independent variable X will be transformed to.
     reg_factor: float
         The factor that will determine the amount of regularization and feature
-        shrinkage. 
+        shrinkage.
     n_iterations: float
         The number of training iterations the algorithm will tune the weights for.
     learning_rate: float
@@ -137,7 +138,7 @@ class LassoRegression(Regression):
     def __init__(self, degree, reg_factor, n_iterations=3000, learning_rate=0.01):
         self.degree = degree
         self.regularization = l1_regularization(alpha=reg_factor)
-        super(LassoRegression, self).__init__(n_iterations, 
+        super(LassoRegression, self).__init__(n_iterations,
                                             learning_rate)
 
     def fit(self, X, y):
@@ -184,7 +185,7 @@ class RidgeRegression(Regression):
     -----------
     reg_factor: float
         The factor that will determine the amount of regularization and feature
-        shrinkage. 
+        shrinkage.
     n_iterations: float
         The number of training iterations the algorithm will tune the weights for.
     learning_rate: float
@@ -192,7 +193,7 @@ class RidgeRegression(Regression):
     """
     def __init__(self, reg_factor, n_iterations=1000, learning_rate=0.001):
         self.regularization = l2_regularization(alpha=reg_factor)
-        super(RidgeRegression, self).__init__(n_iterations, 
+        super(RidgeRegression, self).__init__(n_iterations,
                                             learning_rate)
 
 class PolynomialRidgeRegression(Regression):
@@ -204,7 +205,7 @@ class PolynomialRidgeRegression(Regression):
         The degree of the polynomial that the independent variable X will be transformed to.
     reg_factor: float
         The factor that will determine the amount of regularization and feature
-        shrinkage. 
+        shrinkage.
     n_iterations: float
         The number of training iterations the algorithm will tune the weights for.
     learning_rate: float
@@ -213,7 +214,7 @@ class PolynomialRidgeRegression(Regression):
     def __init__(self, degree, reg_factor, n_iterations=3000, learning_rate=0.01, gradient_descent=True):
         self.degree = degree
         self.regularization = l2_regularization(alpha=reg_factor)
-        super(PolynomialRidgeRegression, self).__init__(n_iterations, 
+        super(PolynomialRidgeRegression, self).__init__(n_iterations,
                                                         learning_rate)
 
     def fit(self, X, y):
@@ -233,7 +234,7 @@ class ElasticNet(Regression):
         The degree of the polynomial that the independent variable X will be transformed to.
     reg_factor: float
         The factor that will determine the amount of regularization and feature
-        shrinkage. 
+        shrinkage.
     l1_ration: float
         Weighs the contribution of l1 and l2 regularization.
     n_iterations: float
@@ -241,11 +242,11 @@ class ElasticNet(Regression):
     learning_rate: float
         The step length that will be used when updating the weights.
     """
-    def __init__(self, degree=1, reg_factor=0.05, l1_ratio=0.5, n_iterations=3000, 
+    def __init__(self, degree=1, reg_factor=0.05, l1_ratio=0.5, n_iterations=3000,
                 learning_rate=0.01):
         self.degree = degree
         self.regularization = l1_l2_regularization(alpha=reg_factor, l1_ratio=l1_ratio)
-        super(ElasticNet, self).__init__(n_iterations, 
+        super(ElasticNet, self).__init__(n_iterations,
                                         learning_rate)
 
     def fit(self, X, y):
